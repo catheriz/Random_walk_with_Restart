@@ -1,9 +1,9 @@
 # Random Walk with Restart on Multiplex Network
-We utilized abs(z-score) as the initial score vector for the Random Walk with Restart(RWR) Algorithm on Multiplex Network. For the total IIMs and its subtypes, we construted a multiplex network for each of those. Each Multiplex Network was compsoed of four layers including:
+We utilized abs(z-score) as the initial score vector for the Random Walk with Restart(RWR) Algorithm on Multiplex Network. For the total IIMs, PM, DM, JDM, and myositis with anti-Jo1, we construted a multiplex network for each of those. Each Multiplex Network was compsoed of three layers including:
 
 1. Protein-Protein Interaction of genes/proteins that directly interacted with the disease genes(1st shell) and those that interacted with the disease genes or proteins from the 1st shell(2nd shell)
 2. Co-expression Layer generated from RNA transcript expression data of 109 immune cell samples and myositis and immune-system related tissues, including bone marrow, spleen, thymus, tonsils, skin, lymph node, and skeletal muscle
-3. KEGG Pathways that disease genes participate in 
+3. KEGG Pathways in which disease genes participate.
 
 The RWR code was based upon the algorithm published in:
 
