@@ -40,7 +40,7 @@ for (disease_name in disease_name_list){
   t3 = t3[c(2:(dim(t3)[2]))]
   t3 = as.matrix(t3)
   Coexpression_cor.net = graph.adjacency(t3, mode="undirected",weighted = TRUE)
-  Coexpression_cor.net - simplify(Coexpression_cor.net,remove.multiple = TRUE, remove.loops = TRUE)
+  Coexpression_cor.net = simplify(Coexpression_cor.net,remove.multiple = TRUE, remove.loops = TRUE)
   #print(paste("Coexpression Number of Edges: ", ecount(Coexpression_cor.net),sep="",collapse = NULL))
   #print(paste("Coexpression Number of Nodes: ", vcount(Coexpression_cor.net),sep="", collapse = NULL))
   V(Coexpression_cor.net)$type = 'Coexpression'
