@@ -1,17 +1,34 @@
 # Random Walk with Restart on Multiplex Network
-We utilized -log10(P-value) as the initial score vector for the Random Walk with Restart(RWR) Algorithm on Multiplex Network. For the total IIMs, PM, DM, JDM, and myositis with anti-Jo1, we construted a multiplex network for each of those. Each Multiplex Network was compsoed of three layers including:
+This project employs the Random Walk with Restart (RWR) algorithm on a multiplex network, with -log10(P-value) used as the initial score vector. Each network consists of three layers:
 
-1. Protein-Protein Interaction of genes/proteins that directly interacted with the disease genes(1st shell) and those that interacted with the disease genes or proteins from the 1st shell(2nd shell)
-2. Co-expression Layer generated from RNA transcript expression data of 109 immune cell samples and myositis and immune-system related tissues, including bone marrow, spleen, thymus, tonsils, skin, lymph node, and skeletal muscle
-3. KEGG Pathways in which disease genes participate.
+1. Protein-Protein Interaction (PPI) Layer: Contains genes/proteins directly interacting with disease-associated genes (1st shell) and those interacting with 1st shell genes/proteins (2nd shell).
+2. KEGG Pathways Layer: Represents pathways in which the disease genes participate.
+3. Co-expression Layer: Derived from RNA expression data from 109 immune cell samples and myositis/immune-related tissues, including bone marrow, spleen, thymus, tonsils, skin, lymph node, and skeletal muscle.
 
-The RWR code was based upon the algorithm published in:
+## Permutation Testing
+We conducted 1000 RWR iterations by randomly permuting seed nodes. Candidate p-values were calculated based on the proportion of permuted RWR scores that were equal to or exceeded the observed RWR score.
 
-A Valdeolivas, L Tichit, C Navarro, S Perrin, G Odelin, N Levy, P Cau, E Remy, and A Baudot. 2018. “Random walk with restart on multiplex and heterogeneous biological networks.” Bioinformatics 35 (3). DOI: https://doi.org/10.1093/bioinformatics/bty637
+## Running Sample Code
+To perform the RWR and Permutation Test, use the following command structure:
+```
+Rscript RWR_with_Permutation_Test.R <disease_name> <PPI_input_file> <KEGG_input_file> <coexpression_network_input_file> <output_directory>
+```
+## Parameters
+ - disease_name: Name of the disease for analysis (e.g., "PM")
+ - PPI_input_file: Path to the PPI adjacency matrix file
+ - KEGG_input_file: Path to the KEGG pathway gene adjacency matrix file
+coexpression_network_input_file: Path to the co-expression network adjacency matrix file
+ - output_directory: Directory where results will be saved
+ - 
+## Algorithm Reference
+Our paper, Meta-analyses Uncover the Genetic Architecture of Idiopathic Inflammatory Myopathies, forms the foundation of this analysis (accepted). Citation will be provided soon.
 
-Modifications were performed on the source code (https://github.com/alberto-valdeolivas/RWR-MH/tree/master/RWR-M.zip) as described in the Supplementary, including:
-1. Normalization on each layer of the multiplex network
-2. Degree-degree Spearman correlation between the same nodes in different layers
+The RWR algorithm implementation is based on:
 
-# Permutation Test
-We conducted 1000 iterations of RWR by randomly permuting the seed nodes. The p-values of the candidates were determined by calculating the proportion of permuted RWR scores that were equal to or greater than the observed RWR score.
+A Valdeolivas, L Tichit, C Navarro, S Perrin, G Odelin, N Levy, P Cau, E Remy, and A Baudot. 2018. “Random walk with restart on multiplex and heterogeneous biological networks.” Bioinformatics 35 (3).
+
+Our code includes modifications based on the [source code](https://github.com/alberto-valdeolivas/RWR-MH/tree/master/RWR-M.zip), with adjustments documented in the Supplementary Information, such as:
+
+ - Layer Normalization: Performed on each layer of the multiplex network.
+ - Degree-degree Spearman Correlation: Calculated for identical nodes across layers.
+ - Permutation Test: Conducted to assess the significance of RWR scores.
