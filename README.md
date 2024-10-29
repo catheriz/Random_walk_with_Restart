@@ -19,12 +19,10 @@ Rscript RWR_with_Permutation_Test.R <disease_name> <PPI_input_file> <KEGG_input_
  - KEGG_input_file: Path to the KEGG pathway gene adjacency matrix file
 coexpression_network_input_file: Path to the co-expression network adjacency matrix file
  - output_directory: Directory where results will be saved
- - 
 ## Algorithm Reference
 Our paper, Meta-analyses Uncover the Genetic Architecture of Idiopathic Inflammatory Myopathies, forms the foundation of this analysis (accepted). Citation will be provided soon.
 
 The RWR algorithm implementation is based on:
-
 A Valdeolivas, L Tichit, C Navarro, S Perrin, G Odelin, N Levy, P Cau, E Remy, and A Baudot. 2018. “Random walk with restart on multiplex and heterogeneous biological networks.” Bioinformatics 35 (3).
 
 Our code includes modifications based on the [source code](https://github.com/alberto-valdeolivas/RWR-MH/tree/master/RWR-M.zip), with adjustments documented in the Supplementary Information, such as:
