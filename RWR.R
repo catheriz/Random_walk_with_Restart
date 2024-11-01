@@ -190,9 +190,9 @@ for (disease_name in disease_name_list){
   prox_vector  = prox_vector/sum(prox_vector)
   restart_vector =  prox_vector
   
-  rwr <- function(Adjacency_matrix, prox_vector, alpha, Threeshold, err,iter){
+  rwr <- function(SupraAdjacencyMatrix, prox_vector, alpha, threshold, err,iter){
     restart_vector =  prox_vector
-    while(err >= Threeshold){
+    while(err >= threshold){
       old_prox_vector = prox_vector
       prox_vector = (1-alpha)*(SupraAdjacencyMatrix  %*% prox_vector) + alpha*restart_vector
       err = sqrt(sum((prox_vector-old_prox_vector)^2))
@@ -205,10 +205,10 @@ for (disease_name in disease_name_list){
   }  
   err = 1
   iter = 1
-  Threeshold = 1e-15
+  threshold = 1e-15
   alpha = 0.7
   
-  prox_vector = as.matrix(rwr(SupraAdjacencyMatrix, prox_vector, alpha, Threeshold, err,iter))
+  prox_vector = as.matrix(rwr(SupraAdjacencyMatrix, prox_vector, alpha, threshold, err,iter))
   Random_Walk_Results = as.data.frame(cbind(rownames(prox_vector),prox_vector))
   Random_Walk_Results$GeneNames = gsub("_[^_]*$","",Random_Walk_Results$V1)
   Random_Walk_Results$log_value = log(as.numeric(Random_Walk_Results$V2)+1)
@@ -242,9 +242,9 @@ for (disease_name in disease_name_list){
   for (j in 1:nperms) {
     err = 1
     iter = 1
-    Threeshold = 1e-15
+    threshold = 1e-15
     s_perm <- sample(restart_vector, length(restart_vector)) # randomly permute the seed nodes
-    perm_rwr_ind = as.matrix(rwr(SupraAdjacencyMatrix, s_perm, alpha, Threeshold, err,iter))
+    perm_rwr_ind = as.matrix(rwr(SupraAdjacencyMatrix, s_perm, alpha, threshold, err,iter))
     perm_rwr_ind = as.data.frame(cbind(rownames(perm_rwr_ind),perm_rwr_ind))
     perm_rwr_ind $V1 = gsub("_[^_]*$","",Random_Walk_Results$V1)
     perm_rwr_ind $V2 = log(as.numeric(perm_rwr_ind$V2)+1)
