@@ -251,12 +251,16 @@ for (j in 1:nperms) {
   iter <- 1
   threshold <- 1e-15
   
-  # Randomly permute the seed nodes
-  perm_seeds <- sample(seq_len(N), size = length(seed_pos), replace = FALSE)
+  # Randomly permute the seed nodes (uncommend to select option)
   
-  # Create a permuted restart vector with uniform weights on the selected seed nodes
-  s_perm <- numeric(N * L)
-  s_perm[perm_seeds] <- Seeds_Score$Score / sum(Seeds_Score$Score)
+  # Option 1: Randomly reassign existing values for seed scores by shuffling restart_vector values.
+  s_perm <- sample(restart_vector, length(restart_vector))
+
+  # Option 2: Randomly select new seed nodes and assign uniform weights.
+  # Uncomment the lines below to enable this option:
+  #perm_seeds <- sample(seq_len(N), size = length(seed_pos), replace = FALSE) #
+  #s_perm <- numeric(N * L)
+  #s_perm[perm_seeds] <- Seeds_Score$Score / sum(Seeds_Score$Score)
   
   # Perform RWR with the permuted restart vector
   perm_rwr_ind <- as.matrix(rwr(SupraAdjacencyMatrix, s_perm, alpha, threshold, err, iter))
