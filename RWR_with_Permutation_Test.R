@@ -46,7 +46,7 @@ if (file.exists(ppi_file)) {
   row.names(t1) <- t1[,1]
   t1 <- t1[,2:ncol(t1)]
   t1 <- as.matrix(t1)
-  PPI_cor.net <- graph.adjacency(t1, mode = "undirected", weighted = TRUE)
+  PPI_cor.net <- graph_from_adjacency_matrix(t1, mode = "undirected", weighted = TRUE)
   PPI_cor.net <- simplify(PPI_cor.net, remove.multiple = TRUE, remove.loops = TRUE)
   V(PPI_cor.net)$type <- 'PPI'
   Layers[["PPI"]] <- PPI_cor.net
@@ -59,7 +59,7 @@ if (file.exists(kegg_file)) {
   row.names(t2) <- t2[,1]
   t2 <- t2[,2:ncol(t2)]
   t2 <- as.matrix(t2)
-  Kegg_cor.net <- graph.adjacency(t2, mode = "directed", weighted = TRUE)
+  Kegg_cor.net <- graph_from_adjacency_matrix(t2, mode = "directed", weighted = TRUE)
   Kegg_cor.net <- simplify(Kegg_cor.net, remove.multiple = TRUE, remove.loops = TRUE)
   V(Kegg_cor.net)$type <- 'Kegg'
   Layers[["KEGG"]] <- Kegg_cor.net
@@ -72,7 +72,7 @@ if (file.exists(coexpression_file)) {
   row.names(t3) <- t3[,1]
   t3 <- t3[,2:ncol(t3)]
   t3 <- as.matrix(t3)
-  Coexpression_cor.net <- graph.adjacency(t3, mode = "undirected", weighted = TRUE)
+  Coexpression_cor.net <- graph_from_adjacency_matrix(t3, mode = "undirected", weighted = TRUE)
   Coexpression_cor.net <- simplify(Coexpression_cor.net, remove.multiple = TRUE, remove.loops = TRUE)
   V(Coexpression_cor.net)$type <- 'Coexpression'
   Layers[["Coexpression"]] <- Coexpression_cor.net
