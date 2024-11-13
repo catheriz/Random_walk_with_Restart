@@ -230,12 +230,12 @@ for ( i in (1:length(unique(Random_Walk_Results$GeneNames)))){
 rank_global <- as.data.frame(cbind(rank_global_names,rank_global_scores))
 rank_global$rank_global_scores <- as.numeric(rank_global$rank_global_scores)
 rank_global$rank_global_scores <- minMax(rank_global$rank_global_scores)
-write.table(rank_global, paste0(output_dir,'/',disease_name,'_RWR_M_method_3_layer_PPI_KEGG_Coexpression_result.txt'),quote = F,row.names=F,col.names=T)
+write.table(rank_global, paste0(output_dir,'/',disease_name,'_RWR_M_result.txt'),quote = F,row.names=F,col.names=T)
 
 ## We sort the genes according to their score. 
 
 rank_global_NoSeeds <- rank_global[which(!rank_global$rank_global_names %in% disease_gene_data_frame_score$Lead_SNP),]
-write.table(rank_global_NoSeeds,paste0(output_dir,'/',disease_name,'_No_Seeds_RWR_M_method_3_layer_PPI_KEGG_Coexpression.txt'),quote = F,row.names=F,col.names=T)
+write.table(rank_global_NoSeeds,paste0(output_dir,'/',disease_name,'_No_Seeds_RWR_M_result.txt'),quote = F,row.names=F,col.names=T)
 
 print('Finish RWR. Starting permutation test')
 
