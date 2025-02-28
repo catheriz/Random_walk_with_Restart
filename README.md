@@ -109,7 +109,7 @@ Parameters:
 
 ### Construct Co-expression Network
 Please refer to [RWR-MH](https://github.com/alberto-valdeolivas/RWR-MH/tree/master/Scripts_and_Files/Network_Generation/Generate_Coexpression_Network.R).
-
-
+## Citation
+Zhu, Catherine et al. “Genetic Architecture of Idiopathic Inflammatory Myopathies From Meta-Analyses.” Arthritis & Rheumatology (Hoboken, N.J.), 10.1002/art.43088. 16 Dec. 2024, doi:10.1002/art.43088.
 
 
