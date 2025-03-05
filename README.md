@@ -108,7 +108,7 @@ Parameters:
  - ```<output_adjacency_matrix>```: Output path for the directed adjacency matrix in CSV format.
 
 ### Construct Co-expression Network
-Please refer to [RWR-MH](https://github.com/alberto-valdeolivas/RWR-MH/tree/master/Scripts_and_Files/Network_Generation/Generate_Coexpression_Network.R).
+Please refer to Other Resource/Construct_Co_expresssion.R and [RWR-MH](https://github.com/alberto-valdeolivas/RWR-MH/tree/master/Scripts_and_Files/Network_Generation/Generate_Coexpression_Network.R).
 ## Citation
 ```
 Zhu, Catherine et al. “Genetic Architecture of Idiopathic Inflammatory Myopathies From Meta-Analyses.”
