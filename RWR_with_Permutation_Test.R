@@ -1,19 +1,38 @@
 #!/usr/bin/env Rscript
 
-# Load necessary libraries
+# =============================================================================
+# Random Walk with Restart on a Multiplex Network (RWR-M)
+# with degree-degree Spearman inter-layer coupling + permutation test.
+#
+# Reference: Zhu, Catherine et al. "Genetic Architecture of Idiopathic
+# Inflammatory Myopathies From Meta-Analyses." Arthritis & Rheumatology, 2024.
+# Method based on Valdeolivas et al. (2018), with the modifications described
+# in that paper's Supplementary Information.
+#
+# -----------------------------------------------------------------------------
+# REPRODUCIBILITY NOTE
+# The DEFAULT settings below reproduce the values reported in the paper.
+# Post-publication refinements are exposed as options and are OFF by default.
+# Set them to TRUE only if you want the refined behavior (results will then
+# differ slightly from the published numbers).
+# =============================================================================
+
+# Load necessary libraries (only the two actually used by this script)
 library(igraph)
-library(ggplot2)
-library(dplyr)
 library(Matrix)
-library(Rcpp)
-library(biomaRt)
-library(supraHex)
-library(dnet)
-library(Rgraphviz)
-library(data.table)
 
 # Set seed for reproducibility
 set.seed(16)
+
+# -----------------------------------------------------------------------------
+# USER OPTIONS
+# -----------------------------------------------------------------------------
+# pval_floor:
+#   FALSE (default) -> published behavior: p = sum(perm >= obs) / nperms
+#   TRUE            -> refined estimator:  p = (sum(perm >= obs) + 1) / (nperms + 1)
+#                      avoids p == 0 and is the conventional Monte-Carlo p-value.
+pval_floor <- FALSE
+# -----------------------------------------------------------------------------
 
 # Parse command-line arguments
 args <- commandArgs(trailingOnly = TRUE)
@@ -89,6 +108,15 @@ for (i in 1:L) {
 }
   
 Node_Names_all <- unique(Node_Names_all)
+
+# Diagnostic (no effect on results): report any seed genes that are not present
+# as nodes in the multiplex and will therefore be silently ignored downstream.
+missing_seeds <- setdiff(disease_gene_data_frame_score$Lead_SNP, Node_Names_all)
+if (length(missing_seeds) > 0) {
+  warning(sprintf("%d seed gene(s) absent from the multiplex and ignored: %s",
+                  length(missing_seeds), paste(missing_seeds, collapse = ", ")))
+}
+
 Layers_New <- vector("list", L)
   
 for (i in 1:L){
@@ -125,19 +153,21 @@ for (i in 1:L){
   Col_Node_Names <- c(Col_Node_Names,Layer_Col_Names)
   Row_Node_Names <- c(Row_Node_Names,Layer_Row_Names)
   
-  #Modification:------------------------------------------------------------------------------------------------------------------------------------------------- 
+  #Modification:-------------------------------------------------------------------------------------------------------------------------------------------------
   #Calculate in-degree and out-degree of the adjacency matrix
   InDegree <- rowSums(Adjacency_Layer)
   OutDegree <- colSums(Adjacency_Layer)
   #if the layer is undirected, perform symmetric normalization on the adjacency matrix. Otherwise, perform column normalization (normalized based on end points)
+  # NOTE: sparse Diagonal() replaces base diag() here. This is mathematically
+  # identical to the published version but avoids allocating a dense N x N matrix.
   if (is.directed(Layers_New[[i]]) == FALSE) {
-    D2 <- diag(1/sqrt(apply(Adjacency_Layer, 2, sum)))
-    D2[!is.finite(D2)] <- 0
+    D2 <- Diagonal(x = 1/sqrt(colSums(Adjacency_Layer)))
+    D2@x[!is.finite(D2@x)] <- 0
     Adjacency_Layer_Normalized <- D2 %*% Adjacency_Layer %*% D2
     DegreeVector <- (InDegree + OutDegree) / 2
   } else {
-    D_in <- diag(1/apply(Adjacency_Layer, 2, sum))
-    D_in[!is.finite(D_in)] <- 0
+    D_in <- Diagonal(x = 1/colSums(Adjacency_Layer))
+    D_in@x[!is.finite(D_in@x)] <- 0
     Adjacency_Layer_Normalized <- Adjacency_Layer %*% D_in
     DegreeVector <- InDegree + OutDegree
   }
@@ -153,6 +183,15 @@ for (l1 in 1:L) {
     InterSpearman[l1, l2] <- cor(x = Degree[[l1]], Degree[[l2]], method = "spearman")
     InterSpearman[l2, l1] <- InterSpearman[l1, l2]
   }
+}
+
+# Diagnostic (no effect on results): the inter-layer coupling uses these
+# correlations directly, so a negative value produces a negative cross-layer
+# weight. Degree-degree correlations across biological layers are usually
+# positive; warn if any pair is not.
+if (any(InterSpearman < 0)) {
+  warning("Negative inter-layer degree correlation(s) detected; ",
+          "cross-layer coupling is negative for those layer pair(s).")
 }
 
 for (i in 1:L){
@@ -283,7 +322,12 @@ for (j in 1:nperms) {
 # Calculate p-values based on the permutation distributions
 colnames(perm_rwr) <- perm_rwr_ind_names
 pvals <- sapply(1:dim(obs_rwr)[1], function(i) {
-  sum(perm_rwr[, i] >= obs_rwr$rank_global_scores[i]) / nperms
+  num <- sum(perm_rwr[, i] >= obs_rwr$rank_global_scores[i])
+  if (pval_floor) {
+    (num + 1) / (nperms + 1)   # refined estimator (set pval_floor <- TRUE)
+  } else {
+    num / nperms               # published behavior (default)
+  }
 })
 
 
